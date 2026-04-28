@@ -17,12 +17,16 @@ async function adminProducts(req, res) {
 }
 
 async function createProduct(req, res) {
-  await productModel.createProduct(req.body);
+  const payload = { ...req.body };
+  if (req.file) payload.image = `/uploads/${req.file.filename}`;
+  await productModel.createProduct(payload);
   res.redirect("/admin/products");
 }
 
 async function updateProduct(req, res) {
-  await productModel.updateProduct(req.params.id, req.body);
+  const payload = { ...req.body };
+  if (req.file) payload.image = `/uploads/${req.file.filename}`;
+  await productModel.updateProduct(req.params.id, payload);
   res.redirect("/admin/products");
 }
 

@@ -4,23 +4,26 @@
   <h1 class="mb-6 text-3xl font-bold">CRUD Produk</h1>
   <section class="rounded-2xl border border-blue-400/30 bg-[#102a52]/80 p-6 shadow-xl shadow-black/30">
     <h3 class="mb-4 text-xl font-semibold">Tambah Produk</h3>
-    <form method="POST" action="/admin/products" class="grid gap-3 md:grid-cols-2">
+    <form method="POST" action="/admin/products" enctype="multipart/form-data" class="grid gap-3 md:grid-cols-2">
       <input class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" name="name" placeholder="Nama produk" required />
       <input class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" name="price" type="number" placeholder="Harga" required />
       <input class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" name="stock" type="number" placeholder="Stock" required />
       <input class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" name="description" placeholder="Deskripsi" required />
-      <input class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring md:col-span-2" name="image" placeholder="URL gambar (optional)" />
+      <input class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring md:col-span-2 file:mr-3 file:rounded-lg file:border-0 file:bg-blue-700 file:px-3 file:py-2 file:text-white" name="image_file" type="file" accept="image/*" />
       <button class="rounded-xl bg-primary px-5 py-2.5 font-semibold hover:bg-blue-700 md:col-span-2" type="submit">Tambah</button>
     </form>
   </section>
   <section class="mt-6 rounded-2xl border border-blue-400/30 bg-[#102a52]/80 p-6 shadow-xl shadow-black/30">
     <div class="overflow-auto">
     <table class="min-w-full text-sm">
-      <thead class="border-b border-blue-300/30 text-left"><tr><th class="px-3 py-2">Produk</th><th class="px-3 py-2">Harga</th><th class="px-3 py-2">Stock</th><th class="px-3 py-2">Action</th></tr></thead>
+      <thead class="border-b border-blue-300/30 text-left"><tr><th class="px-3 py-2">Produk</th><th class="px-3 py-2">Foto</th><th class="px-3 py-2">Harga</th><th class="px-3 py-2">Stock</th><th class="px-3 py-2">Action</th></tr></thead>
       <tbody>
         <% products.forEach((p) => { %>
           <tr class="border-b border-blue-300/10">
             <td class="px-3 py-2"><%= p.name %></td>
+            <td class="px-3 py-2">
+              <img class="h-12 w-12 rounded-lg object-cover" src="<%= p.image || `https://placehold.co/100x100/102a52/e5ecff?text=${encodeURIComponent(p.name)}` %>" alt="<%= p.name %>">
+            </td>
             <td class="px-3 py-2">Rp <%= Number(p.price).toLocaleString('id-ID') %></td>
             <td class="px-3 py-2"><%= p.stock %></td>
             <td class="px-3 py-2">
