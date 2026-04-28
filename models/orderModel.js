@@ -6,27 +6,27 @@ function generateInvoiceNumber() {
 
 async function createOrder({ userId, items, total }) {
   const invoiceNumber = generateInvoiceNumber();
-  const client = await db.connect();
+  const client = await db.getConnection();
   try {
-    await client.query("begin");
-    const orderRes = await client.query(
-      "insert into orders (user_id, invoice_number, total, status, payment_status) values ($1, $2, $3, 'pending', 'pending') returning id",
+    await client.beginTransaction();
+    const [orderRes] = await client.query(
+      "INSERT INTO orders (user_id, invoice_number, total, status, payment_status) VALUES (?, ?, ?, 'pending', 'pending')",
       [userId, invoiceNumber, total]
     );
-    const orderId = orderRes.rows[0].id;
+    const orderId = orderRes.insertId;
 
     for (const item of items) {
       await client.query(
-        "insert into order_items (order_id, product_id, qty, price) values ($1, $2, $3, $4)",
+        "INSERT INTO order_items (order_id, product_id, qty, price) VALUES (?, ?, ?, ?)",
         [orderId, item.product_id, item.qty, item.price]
       );
-      await client.query("update products set stock = stock - $1 where id = $2", [item.qty, item.product_id]);
+      await client.query("UPDATE products SET stock = stock - ? WHERE id = ?", [item.qty, item.product_id]);
     }
 
-    await client.query("commit");
+    await client.commit();
     return orderId;
   } catch (error) {
-    await client.query("rollback");
+    await client.rollback();
     throw error;
   } finally {
     client.release();
@@ -34,47 +34,47 @@ async function createOrder({ userId, items, total }) {
 }
 
 async function getOrderById(id) {
-  const orderRes = await db.query(
-    `select o.*, u.name as customer_name
-     from orders o
-     join users u on u.id = o.user_id
-     where o.id = $1`,
+  const [orderRows] = await db.query(
+    `SELECT o.*, u.name AS customer_name
+     FROM orders o
+     JOIN users u ON u.id = o.user_id
+     WHERE o.id = ?`,
     [id]
   );
-  if (!orderRes.rows[0]) return null;
+  if (!orderRows[0]) return null;
 
-  const itemsRes = await db.query(
-    `select oi.*, p.name as product_name
-     from order_items oi
-     join products p on p.id = oi.product_id
-     where oi.order_id = $1`,
+  const [itemsRows] = await db.query(
+    `SELECT oi.*, p.name AS product_name
+     FROM order_items oi
+     JOIN products p ON p.id = oi.product_id
+     WHERE oi.order_id = ?`,
     [id]
   );
 
-  return { ...orderRes.rows[0], items: itemsRes.rows };
+  return { ...orderRows[0], items: itemsRows };
 }
 
 async function getOrdersByUser(userId) {
-  const result = await db.query("select * from orders where user_id = $1 order by created_at desc", [userId]);
-  return result.rows;
+  const [rows] = await db.query("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC", [userId]);
+  return rows;
 }
 
 async function getAllOrders() {
-  const result = await db.query(
-    `select o.*, u.name as customer_name
-     from orders o
-     join users u on u.id = o.user_id
-     order by o.created_at desc`
+  const [rows] = await db.query(
+    `SELECT o.*, u.name AS customer_name
+     FROM orders o
+     JOIN users u ON u.id = o.user_id
+     ORDER BY o.created_at DESC`
   );
-  return result.rows;
+  return rows;
 }
 
 async function updatePaymentProof(orderId, filePath) {
-  await db.query("update orders set payment_proof = $1 where id = $2", [filePath, orderId]);
+  await db.query("UPDATE orders SET payment_proof = ? WHERE id = ?", [filePath, orderId]);
 }
 
 async function updateOrderStatus(orderId, status) {
-  await db.query("update orders set status = $1, payment_status = $1 where id = $2", [status, orderId]);
+  await db.query("UPDATE orders SET status = ?, payment_status = ? WHERE id = ?", [status, status, orderId]);
 }
 
 module.exports = {

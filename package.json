@@ -1,7 +1,7 @@
 {
   "name": "jaya-motospart",
   "version": "1.0.0",
-  "description": "Simple e-commerce sparepart motor with Node.js, EJS, Supabase Postgres",
+  "description": "Simple e-commerce sparepart motor with Node.js, EJS, MySQL",
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
@@ -15,7 +15,7 @@
     "express-session": "^1.18.0",
     "method-override": "^3.0.0",
     "multer": "^1.4.5-lts.1",
-    "pg": "^8.13.1"
+    "mysql2": "^3.11.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"

@@ -22,10 +22,10 @@ async function register(req, res) {
     return res.redirect("/login");
   } catch (error) {
     console.error("Register error:", error);
-    if (error.code === "42P01") {
+    if (error.code === "ER_NO_SUCH_TABLE" || error.errno === 1146) {
       return res.render("customer/register", { title: "Register", error: "Tabel users belum ada. Jalankan migration dulu." });
     }
-    if (error.code === "23505") {
+    if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) {
       return res.render("customer/register", { title: "Register", error: "Email sudah digunakan" });
     }
     return res.render("customer/register", { title: "Register", error: `Gagal register: ${error.message}` });

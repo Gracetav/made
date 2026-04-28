@@ -1,16 +1,16 @@
 const db = require("../config/db");
 
 async function createCustomer({ name, email, password }) {
-  const result = await db.query(
-    "insert into users (name, email, password, role) values ($1, $2, $3, 'customer') returning id",
+  const [result] = await db.query(
+    "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'customer')",
     [name, email, password]
   );
-  return result.rows[0].id;
+  return result.insertId;
 }
 
 async function findByEmail(email) {
-  const result = await db.query("select * from users where email = $1 limit 1", [email]);
-  return result.rows[0] || null;
+  const [rows] = await db.query("SELECT * FROM users WHERE email = ? LIMIT 1", [email]);
+  return rows[0] || null;
 }
 
 module.exports = { createCustomer, findByEmail };

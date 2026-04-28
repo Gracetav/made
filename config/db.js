@@ -1,15 +1,16 @@
-const { Pool } = require("pg");
+const mysql = require("mysql2/promise");
 const dotenv = require("dotenv");
 
 dotenv.config();
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is missing in .env");
-}
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || "127.0.0.1",
+  port: Number(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "jaya_motospart",
+  waitForConnections: true,
+  connectionLimit: 10
 });
 
 module.exports = pool;
