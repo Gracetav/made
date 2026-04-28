@@ -1,0 +1,15 @@
+<%- include('../partials/head', { title }) %>
+<main class="mx-auto flex min-h-screen max-w-6xl items-center justify-center px-4">
+  <section class="w-full max-w-md rounded-2xl border border-blue-400/30 bg-[#102a52]/90 p-8 shadow-2xl shadow-black/40">
+    <h1 class="mb-6 text-3xl font-bold">Register Customer</h1>
+    <% if (error) { %><p class="mb-4 rounded-lg bg-rose-500/20 px-3 py-2 text-rose-300"><%= error %></p><% } %>
+    <form method="POST" action="/register" class="space-y-3">
+      <input class="w-full rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" type="text" name="name" placeholder="Nama Lengkap" required />
+      <input class="w-full rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" type="email" name="email" placeholder="Email" required />
+      <input class="w-full rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" type="password" name="password" placeholder="Password" required />
+      <button class="w-full rounded-xl bg-primary py-3 font-semibold hover:bg-blue-700" type="submit">Register</button>
+    </form>
+    <p class="mt-5 text-sm text-slate-300">Sudah punya akun? <a class="font-semibold text-blue-300 hover:underline" href="/login">Login</a></p>
+  </section>
+</main>
+<%- include('../partials/foot') %>

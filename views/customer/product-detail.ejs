@@ -1,0 +1,16 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<main class="mx-auto max-w-4xl px-4 py-8">
+  <section class="rounded-2xl border border-blue-400/30 bg-[#102a52]/80 p-6 shadow-xl shadow-black/30">
+    <h1 class="text-3xl font-bold"><%= product.name %></h1>
+    <p class="mt-3 text-slate-300"><%= product.description %></p>
+    <p class="mt-2 text-sm text-slate-400">Stock: <%= product.stock %></p>
+    <p class="mt-4 text-2xl font-bold text-blue-300">Rp <%= Number(product.price).toLocaleString('id-ID') %></p>
+    <form method="POST" action="/customer/cart" class="mt-5 flex flex-wrap items-center gap-3">
+      <input type="hidden" name="product_id" value="<%= product.id %>" />
+      <input class="w-24 rounded-xl border border-blue-300/40 bg-blue-950/40 px-3 py-2 outline-none ring-blue-400 focus:ring" type="number" name="qty" min="1" value="1" required />
+      <button class="rounded-xl bg-primary px-5 py-2.5 font-semibold hover:bg-blue-700" type="submit">Tambah ke Cart</button>
+    </form>
+  </section>
+</main>
+<%- include('../partials/foot') %>

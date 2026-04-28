@@ -1,0 +1,23 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<main class="mx-auto max-w-6xl px-4 py-8">
+  <h1 class="mb-6 text-3xl font-bold">Pesanan Saya</h1>
+  <section class="rounded-2xl border border-blue-400/30 bg-[#102a52]/80 p-6 shadow-xl shadow-black/30">
+    <div class="overflow-auto">
+    <table class="min-w-full text-sm">
+      <thead class="border-b border-blue-300/30 text-left"><tr><th class="px-3 py-2">Invoice</th><th class="px-3 py-2">Total</th><th class="px-3 py-2">Status</th><th class="px-3 py-2">Aksi</th></tr></thead>
+      <tbody>
+        <% orders.forEach((o) => { %>
+          <tr class="border-b border-blue-300/10">
+            <td class="px-3 py-2"><%= o.invoice_number %></td>
+            <td class="px-3 py-2">Rp <%= Number(o.total).toLocaleString('id-ID') %></td>
+            <td class="px-3 py-2"><span class="rounded-full bg-blue-900/50 px-2 py-1 text-xs uppercase"><%= o.status %></span></td>
+            <td class="px-3 py-2"><a class="inline-block rounded-lg border border-blue-300/50 px-3 py-1.5 hover:bg-blue-900/40" href="/orders/invoice/<%= o.id %>">Lihat Invoice</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    </div>
+  </section>
+</main>
+<%- include('../partials/foot') %>

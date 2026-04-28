@@ -1,0 +1,30 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<main class="mx-auto max-w-6xl px-4 py-8">
+  <h1 class="mb-6 text-3xl font-bold">Cart & Checkout</h1>
+  <section class="rounded-2xl border border-blue-400/30 bg-[#102a52]/80 p-6 shadow-xl shadow-black/30">
+    <% if (!cart.length) { %>
+      <p class="text-slate-300">Cart kosong.</p>
+    <% } else { %>
+      <div class="overflow-auto">
+      <table class="min-w-full text-sm">
+        <thead class="border-b border-blue-300/30 text-left text-slate-200"><tr><th class="px-3 py-2">Produk</th><th class="px-3 py-2">Qty</th><th class="px-3 py-2">Harga</th></tr></thead>
+        <tbody>
+          <% cart.forEach((item) => { %>
+            <tr class="border-b border-blue-300/10">
+              <td class="px-3 py-2"><%= item.name %></td>
+              <td class="px-3 py-2"><%= item.qty %></td>
+              <td class="px-3 py-2">Rp <%= Number(item.qty * item.price).toLocaleString('id-ID') %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      </div>
+      <h3 class="mt-5 text-xl font-bold text-blue-300">Total: Rp <%= Number(total).toLocaleString('id-ID') %></h3>
+      <form method="POST" action="/customer/checkout">
+        <button class="mt-4 rounded-xl bg-primary px-5 py-2.5 font-semibold hover:bg-blue-700" type="submit">Checkout</button>
+      </form>
+    <% } %>
+  </section>
+</main>
+<%- include('../partials/foot') %>

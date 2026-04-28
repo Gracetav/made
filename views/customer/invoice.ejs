@@ -1,0 +1,41 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<main class="mx-auto max-w-5xl px-4 py-8">
+  <section class="rounded-2xl border border-blue-400/30 bg-[#102a52]/80 p-6 shadow-xl shadow-black/30">
+    <h1 class="text-3xl font-bold">Invoice <%= order.invoice_number %></h1>
+    <div class="mt-4 grid gap-2 text-sm text-slate-300 md:grid-cols-3">
+      <p><span class="text-slate-400">Customer:</span> <%= order.customer_name %></p>
+      <p><span class="text-slate-400">Payment Status:</span> <%= order.payment_status %></p>
+      <p><span class="text-slate-400">Order Status:</span> <%= order.status %></p>
+    </div>
+    <div class="mt-4 overflow-auto">
+    <table class="min-w-full text-sm">
+      <thead class="border-b border-blue-300/30 text-left"><tr><th class="px-3 py-2">Produk</th><th class="px-3 py-2">Qty</th><th class="px-3 py-2">Harga</th></tr></thead>
+      <tbody>
+        <% order.items.forEach((item) => { %>
+          <tr class="border-b border-blue-300/10">
+            <td class="px-3 py-2"><%= item.product_name %></td>
+            <td class="px-3 py-2"><%= item.qty %></td>
+            <td class="px-3 py-2">Rp <%= Number(item.price * item.qty).toLocaleString('id-ID') %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    </div>
+    <h3 class="mt-4 text-xl font-bold text-blue-300">Total: Rp <%= Number(order.total).toLocaleString('id-ID') %></h3>
+    <div class="mt-4 flex flex-wrap gap-3">
+      <button class="rounded-xl border border-blue-300/50 px-4 py-2 hover:bg-blue-900/40" onclick="window.print()">Print Invoice</button>
+    </div>
+    <% if (currentUser.role === "customer") { %>
+      <form class="mt-6 space-y-3 rounded-xl border border-blue-300/25 p-4" method="POST" action="/orders/upload-proof/<%= order.id %>" enctype="multipart/form-data">
+        <label class="text-sm text-slate-300">Upload Bukti Transfer (jpg/png)</label>
+        <input class="w-full rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" type="file" name="payment_proof" accept="image/*" required />
+        <button class="rounded-xl bg-primary px-5 py-2.5 font-semibold hover:bg-blue-700" type="submit">Upload Bukti</button>
+      </form>
+    <% } %>
+    <% if (order.payment_proof) { %>
+      <p class="mt-4 text-sm">Bukti Transfer: <a class="font-semibold text-blue-300 hover:underline" href="<%= order.payment_proof %>" target="_blank">Lihat File</a></p>
+    <% } %>
+  </section>
+</main>
+<%- include('../partials/foot') %>

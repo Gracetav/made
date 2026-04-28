@@ -1,0 +1,21 @@
+<header class="sticky top-0 z-50 border-b border-blue-800/40 bg-[#0B1F3A]/90 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+    <div class="text-xl font-bold tracking-wide">Jaya Motospart</div>
+    <nav class="flex items-center gap-2 text-sm">
+    <% if (currentUser) { %>
+      <% if (currentUser.role === "customer") { %>
+        <a class="rounded-lg px-3 py-2 hover:bg-blue-900/40" href="/customer/products">Products</a>
+        <a class="rounded-lg px-3 py-2 hover:bg-blue-900/40" href="/customer/cart">Cart</a>
+        <a class="rounded-lg px-3 py-2 hover:bg-blue-900/40" href="/customer/orders">Orders</a>
+      <% } else { %>
+        <a class="rounded-lg px-3 py-2 hover:bg-blue-900/40" href="/admin/dashboard">Dashboard</a>
+        <a class="rounded-lg px-3 py-2 hover:bg-blue-900/40" href="/admin/products">Products</a>
+        <a class="rounded-lg px-3 py-2 hover:bg-blue-900/40" href="/admin/orders">Orders</a>
+      <% } %>
+      <form method="POST" action="/logout">
+        <button type="submit" class="rounded-lg border border-blue-400/50 px-3 py-2 text-blue-100 hover:bg-blue-900/40">Logout</button>
+      </form>
+    <% } %>
+    </nav>
+  </div>
+</header>
