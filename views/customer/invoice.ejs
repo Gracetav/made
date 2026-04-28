@@ -24,17 +24,24 @@
     </div>
     <h3 class="mt-4 text-xl font-bold text-blue-300">Total: Rp <%= Number(order.total).toLocaleString('id-ID') %></h3>
     <div class="mt-4 flex flex-wrap gap-3">
-      <button class="rounded-xl border border-blue-300/50 px-4 py-2 hover:bg-blue-900/40" onclick="window.print()">Print Invoice</button>
+      <% if (order.status !== 'confirmed' && order.status !== 'siap diambil') { %>
+        <button class="rounded-xl border border-blue-300/50 px-4 py-2 hover:bg-blue-900/40" onclick="window.print()">Print Invoice</button>
+      <% } else { %>
+        <span class="rounded-xl bg-emerald-700/30 px-4 py-2 text-sm font-semibold text-emerald-200">Order Final - Invoice Terkunci</span>
+      <% } %>
     </div>
-    <% if (currentUser.role === "customer") { %>
-      <form class="mt-6 space-y-3 rounded-xl border border-blue-300/25 p-4" method="POST" action="/orders/upload-proof/<%= order.id %>" enctype="multipart/form-data">
-        <label class="text-sm text-slate-300">Upload Bukti Transfer (jpg/png)</label>
-        <input class="w-full rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" type="file" name="payment_proof" accept="image/*" required />
-        <button class="rounded-xl bg-primary px-5 py-2.5 font-semibold hover:bg-blue-700" type="submit">Upload Bukti</button>
-      </form>
-    <% } %>
     <% if (order.payment_proof) { %>
-      <p class="mt-4 text-sm">Bukti Transfer: <a class="font-semibold text-blue-300 hover:underline" href="<%= order.payment_proof %>" target="_blank">Lihat File</a></p>
+      <div class="mt-4">
+        <p class="mb-2 text-sm text-slate-300">Bukti Transfer:</p>
+        <img
+          src="<%= order.payment_proof %>"
+          alt="Bukti transfer"
+          class="h-28 w-28 rounded-xl border border-blue-300/30 object-cover"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+        />
+        <p class="hidden text-xs text-amber-300">Preview tidak tersedia</p>
+        <a class="mt-2 inline-block text-sm font-semibold text-blue-300 hover:underline" href="<%= order.payment_proof %>" target="_blank">Buka penuh</a>
+      </div>
     <% } %>
   </section>
 </main>

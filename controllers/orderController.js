@@ -2,6 +2,10 @@ const path = require("path");
 const orderModel = require("../models/orderModel");
 const productModel = require("../models/productModel");
 
+function isFinalizedStatus(status) {
+  return status === "confirmed" || status === "siap diambil";
+}
+
 async function addToCart(req, res) {
   const { product_id, qty } = req.body;
   const product = await productModel.getProductById(product_id);
@@ -38,12 +42,32 @@ async function checkout(req, res) {
     total
   });
   req.session.cart = [];
-  res.redirect(`/orders/invoice/${orderId}`);
+  res.redirect(`/orders/upload-proof/${orderId}`);
+}
+
+async function showUploadProof(req, res) {
+  const order = await orderModel.getOrderById(req.params.id);
+  if (!order) return res.status(404).send("Pesanan tidak ditemukan");
+  if (req.session.user.role === "customer" && order.user_id !== req.session.user.id) {
+    return res.status(403).send("Forbidden");
+  }
+  if (isFinalizedStatus(order.status)) {
+    return res.redirect(`/orders/invoice/${order.id}`);
+  }
+  res.render("customer/upload-proof", { title: "Upload Bukti Transfer", order });
 }
 
 async function uploadProof(req, res) {
   const orderId = req.params.id;
-  if (!req.file) return res.redirect(`/orders/invoice/${orderId}`);
+  const order = await orderModel.getOrderById(orderId);
+  if (!order) return res.status(404).send("Pesanan tidak ditemukan");
+  if (req.session.user.role === "customer" && order.user_id !== req.session.user.id) {
+    return res.status(403).send("Forbidden");
+  }
+  if (isFinalizedStatus(order.status)) {
+    return res.redirect(`/orders/invoice/${order.id}`);
+  }
+  if (!req.file) return res.redirect(`/orders/upload-proof/${orderId}`);
   const filePath = `/uploads/${path.basename(req.file.path)}`;
   await orderModel.updatePaymentProof(orderId, filePath);
   res.redirect(`/orders/invoice/${orderId}`);
@@ -54,6 +78,9 @@ async function showInvoice(req, res) {
   if (!order) return res.status(404).send("Invoice tidak ditemukan");
   if (req.session.user.role === "customer" && order.user_id !== req.session.user.id) {
     return res.status(403).send("Forbidden");
+  }
+  if (req.session.user.role === "customer" && !order.payment_proof) {
+    return res.redirect(`/orders/upload-proof/${order.id}`);
   }
   res.render("customer/invoice", { title: "Invoice", order });
 }
@@ -77,6 +104,7 @@ module.exports = {
   addToCart,
   showCart,
   checkout,
+  showUploadProof,
   uploadProof,
   showInvoice,
   customerOrders,
