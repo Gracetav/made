@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS orders (
   user_id BIGINT NOT NULL,
   invoice_number VARCHAR(60) NOT NULL UNIQUE,
   total DECIMAL(10,2) NOT NULL,
-  status ENUM('pending', 'confirmed', 'rejected') NOT NULL DEFAULT 'pending',
+  status ENUM('akan dikemas', 'sedang dikemas', 'siap diambil', 'confirmed') NOT NULL DEFAULT 'akan dikemas',
   payment_status ENUM('pending', 'confirmed', 'rejected') NOT NULL DEFAULT 'pending',
   payment_proof VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -50,3 +50,9 @@ INSERT INTO products (name, price, stock, description, image) VALUES
 ('Brake Pad Racing', 250000, 25, 'Kampas rem performa tinggi untuk motor harian dan balap.', NULL),
 ('Chain Set 428', 420000, 18, 'Rantai dan gear set awet untuk touring jarak jauh.', NULL),
 ('LED Headlamp Pro', 180000, 45, 'Lampu LED terang dan hemat daya.', NULL);
+
+-- Jika database sudah terlanjur dibuat dengan enum status lama,
+-- jalankan ALTER berikut sekali saja:
+ALTER TABLE orders
+  MODIFY COLUMN status ENUM('akan dikemas', 'sedang dikemas', 'siap diambil', 'confirmed')
+  NOT NULL DEFAULT 'akan dikemas';
