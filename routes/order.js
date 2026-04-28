@@ -13,6 +13,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.use(isAuthenticated);
+router.get("/upload-proof/:id", orderController.showUploadProof);
 router.get("/invoice/:id", orderController.showInvoice);
 router.post("/upload-proof/:id", upload.single("payment_proof"), orderController.uploadProof);
 

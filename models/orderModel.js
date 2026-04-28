@@ -10,7 +10,7 @@ async function createOrder({ userId, items, total }) {
   try {
     await client.beginTransaction();
     const [orderRes] = await client.query(
-      "INSERT INTO orders (user_id, invoice_number, total, status, payment_status) VALUES (?, ?, ?, 'pending', 'pending')",
+      "INSERT INTO orders (user_id, invoice_number, total, status, payment_status) VALUES (?, ?, ?, 'akan dikemas', 'pending')",
       [userId, invoiceNumber, total]
     );
     const orderId = orderRes.insertId;
@@ -74,7 +74,7 @@ async function updatePaymentProof(orderId, filePath) {
 }
 
 async function updateOrderStatus(orderId, status) {
-  await db.query("UPDATE orders SET status = ?, payment_status = ? WHERE id = ?", [status, status, orderId]);
+  await db.query("UPDATE orders SET status = ? WHERE id = ?", [status, orderId]);
 }
 
 module.exports = {

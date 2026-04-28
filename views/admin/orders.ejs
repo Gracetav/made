@@ -1,11 +1,11 @@
 <%- include('../partials/head', { title }) %>
 <%- include('../partials/navbar') %>
 <main class="mx-auto max-w-7xl px-4 py-8">
-  <h1 class="mb-6 text-3xl font-bold">Verifikasi Pembayaran & Orders</h1>
+  <h1 class="mb-6 text-3xl font-bold">Manajemen Status Order</h1>
   <section class="rounded-2xl border border-blue-400/30 bg-[#102a52]/80 p-6 shadow-xl shadow-black/30">
     <div class="overflow-auto">
     <table class="min-w-full text-sm">
-      <thead class="border-b border-blue-300/30 text-left"><tr><th class="px-3 py-2">Invoice</th><th class="px-3 py-2">Customer</th><th class="px-3 py-2">Total</th><th class="px-3 py-2">Bukti</th><th class="px-3 py-2">Status</th><th class="px-3 py-2">Update</th><th class="px-3 py-2">Invoice</th></tr></thead>
+      <thead class="border-b border-blue-300/30 text-left"><tr><th class="px-3 py-2">Invoice</th><th class="px-3 py-2">Customer</th><th class="px-3 py-2">Total</th><th class="px-3 py-2">Bukti</th><th class="px-3 py-2">Status Proses</th><th class="px-3 py-2">Update</th><th class="px-3 py-2">Invoice</th></tr></thead>
       <tbody>
         <% orders.forEach((o) => { %>
           <tr class="border-b border-blue-300/10">
@@ -14,7 +14,18 @@
             <td class="px-3 py-2">Rp <%= Number(o.total).toLocaleString('id-ID') %></td>
             <td class="px-3 py-2">
               <% if (o.payment_proof) { %>
-                <a class="font-medium text-blue-300 hover:underline" href="<%= o.payment_proof %>" target="_blank">Lihat Bukti</a>
+                <div class="space-y-2">
+                  <img
+                    src="<%= o.payment_proof %>"
+                    alt="Bukti transfer"
+                    class="h-16 w-16 rounded-lg border border-blue-300/30 object-cover"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
+                  />
+                  <span class="hidden text-xs text-amber-300">Preview tidak tersedia</span>
+                  <div>
+                    <a class="font-medium text-blue-300 hover:underline" href="<%= o.payment_proof %>" target="_blank">Buka penuh</a>
+                  </div>
+                </div>
               <% } else { %>
                 Belum upload
               <% } %>
@@ -23,9 +34,9 @@
             <td class="px-3 py-2">
               <form method="POST" action="/admin/orders/<%= o.id %>/verify" class="flex items-center gap-2">
                 <select class="rounded-lg border border-blue-300/40 bg-blue-950/40 px-2 py-1.5" name="status">
-                  <option value="pending">pending</option>
-                  <option value="confirmed">confirmed</option>
-                  <option value="rejected">rejected</option>
+                  <option value="akan dikemas" <%= o.status === 'akan dikemas' ? 'selected' : '' %>>akan dikemas</option>
+                  <option value="sedang dikemas" <%= o.status === 'sedang dikemas' ? 'selected' : '' %>>sedang dikemas</option>
+                  <option value="siap diambil" <%= o.status === 'siap diambil' ? 'selected' : '' %>>siap diambil</option>
                 </select>
                 <button class="rounded-lg bg-primary px-3 py-1.5 text-sm hover:bg-blue-700" type="submit">Save</button>
               </form>
