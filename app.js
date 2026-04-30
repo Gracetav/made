@@ -34,8 +34,9 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  if (!req.session.user) return res.redirect("/login");
-  if (req.session.user.role === "admin") return res.redirect("/admin/dashboard");
+  if (req.session.user && req.session.user.role === "admin") {
+    return res.redirect("/admin/dashboard");
+  }
   return res.redirect("/customer/products");
 });
 

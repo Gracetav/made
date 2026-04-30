@@ -27,9 +27,17 @@
             <td class="px-3 py-2">Rp <%= Number(p.price).toLocaleString('id-ID') %></td>
             <td class="px-3 py-2"><%= p.stock %></td>
             <td class="px-3 py-2">
-              <form method="POST" action="/admin/products/<%= p.id %>?_method=DELETE">
-                <button class="rounded-lg bg-rose-600 px-3 py-1.5 text-sm font-medium hover:bg-rose-500" type="submit">Delete</button>
-              </form>
+              <div class="flex gap-2">
+                <button 
+                  onclick="openEditModal('<%= p.id %>', '<%= p.name %>', '<%= p.price %>', '<%= p.stock %>', '<%= p.description %>')"
+                  class="rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-medium hover:bg-amber-500"
+                >
+                  Edit
+                </button>
+                <form method="POST" action="/admin/products/<%= p.id %>?_method=DELETE" onsubmit="return confirm('Hapus produk ini?')">
+                  <button class="rounded-lg bg-rose-600 px-3 py-1.5 text-sm font-medium hover:bg-rose-500" type="submit">Delete</button>
+                </form>
+              </div>
             </td>
           </tr>
         <% }) %>
@@ -38,4 +46,67 @@
     </div>
   </section>
 </main>
+
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="w-full max-w-2xl rounded-2xl border border-blue-400/30 bg-[#102a52] p-8 shadow-2xl">
+    <div class="mb-6 flex items-center justify-between">
+      <h3 class="text-2xl font-bold">Edit Produk</h3>
+      <button onclick="closeEditModal()" class="text-slate-400 hover:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <form id="editForm" method="POST" enctype="multipart/form-data" class="grid gap-4 md:grid-cols-2">
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-semibold text-blue-300">Nama Produk</label>
+        <input id="edit_name" name="name" class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" required />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-semibold text-blue-300">Harga (Rp)</label>
+        <input id="edit_price" name="price" type="number" class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" required />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-semibold text-blue-300">Stok</label>
+        <input id="edit_stock" name="stock" type="number" class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" required />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-semibold text-blue-300">Foto Baru (Opsional)</label>
+        <input name="image_file" type="file" accept="image/*" class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-3 py-2 text-sm outline-none ring-blue-400 focus:ring file:mr-3 file:rounded-lg file:border-0 file:bg-blue-700 file:px-3 file:py-1 file:text-white" />
+      </div>
+      <div class="flex flex-col gap-1 md:col-span-2">
+        <label class="text-xs font-semibold text-blue-300">Deskripsi</label>
+        <textarea id="edit_description" name="description" rows="3" class="rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" required></textarea>
+      </div>
+      <button class="mt-2 rounded-xl bg-amber-600 px-5 py-3 font-bold hover:bg-amber-500 md:col-span-2" type="submit">Simpan Perubahan</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openEditModal(id, name, price, stock, description) {
+    const modal = document.getElementById('editModal');
+    const form = document.getElementById('editForm');
+    
+    document.getElementById('edit_name').value = name;
+    document.getElementById('edit_price').value = price;
+    document.getElementById('edit_stock').value = stock;
+    document.getElementById('edit_description').value = description;
+    
+    form.action = `/admin/products/${id}?_method=PUT`;
+    modal.classList.remove('hidden');
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').classList.add('hidden');
+  }
+
+  window.onclick = function(event) {
+    const modal = document.getElementById('editModal');
+    if (event.target == modal) {
+      closeEditModal();
+    }
+  }
+</script>
 <%- include('../partials/foot') %>

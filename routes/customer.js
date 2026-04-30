@@ -5,10 +5,10 @@ const { isAuthenticated, isCustomer } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.use(isAuthenticated, isCustomer);
-
 router.get("/products", productController.showProducts);
 router.get("/products/:id", productController.showProductDetail);
+
+router.use(isAuthenticated, isCustomer);
 router.post("/cart", orderController.addToCart);
 router.get("/cart", orderController.showCart);
 router.post("/checkout", orderController.checkout);

@@ -10,6 +10,24 @@
       <p class="mt-1"><span class="text-slate-400">Total:</span> <span class="font-semibold text-blue-300">Rp <%= Number(order.total).toLocaleString('id-ID') %></span></p>
     </div>
 
+    <div class="mt-6 grid gap-4 md:grid-cols-3">
+      <div class="rounded-xl border border-blue-300/10 bg-blue-900/20 p-4">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">BCA</p>
+        <p class="mt-1 text-lg font-bold text-white">123 456 7890</p>
+        <p class="text-[10px] text-slate-400">a/n PT JAYA MOTOSPART</p>
+      </div>
+      <div class="rounded-xl border border-blue-300/10 bg-blue-900/20 p-4">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Mandiri</p>
+        <p class="mt-1 text-lg font-bold text-white">098 765 4321</p>
+        <p class="text-[10px] text-slate-400">a/n PT JAYA MOTOSPART</p>
+      </div>
+      <div class="rounded-xl border border-blue-300/10 bg-blue-900/20 p-4">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">BNI</p>
+        <p class="mt-1 text-lg font-bold text-white">112 233 4455</p>
+        <p class="text-[10px] text-slate-400">a/n PT JAYA MOTOSPART</p>
+      </div>
+    </div>
+
     <form class="mt-6 space-y-3 rounded-xl border border-blue-300/25 p-4" method="POST" action="/orders/upload-proof/<%= order.id %>" enctype="multipart/form-data">
       <label class="text-sm text-slate-300">Pilih gambar bukti transfer (jpg/png/webp)</label>
       <input class="w-full rounded-xl border border-blue-300/40 bg-blue-950/40 px-4 py-3 outline-none ring-blue-400 focus:ring" type="file" name="payment_proof" accept="image/*" required />
